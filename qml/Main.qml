@@ -1,48 +1,46 @@
 import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
+import ContextMenu
 
 Window {
     id: root
-    width: 400
-    height: 300
+    width: 450
+    height: 320
     visible: true
     title: "Context Menu"
 
-    property var menuData: [
-        { label: "Open",  id: "open",  handler: () => console.log("OPEN executed") },
-        { label: "Save",  id: "save",  handler: () => console.log("SAVE executed") },
-        { label: "Close", id: "close", handler: () => console.log("CLOSE executed") }
+    property var menuJson: [
+        { type: "item", label: "New File", id: "new", handler: () => console.log("NEW FILE") },
+        { type: "item", label: "Open…", id: "open", handler: () => console.log("OPEN") },
+        { type: "separator" },
+        { type: "item", label: "Save", id: "save", handler: () => console.log("SAVE") },
+        { type: "item", label: "Save As…", id: "saveAs", handler: () => console.log("SAVE AS") },
+        { type: "separator" },
+        { type: "item", label: "Exit", id: "exit", handler: () => Qt.quit() }
     ]
 
-    Menu {
-        id: contextMenu
-
-        Instantiator {
-            model: root.menuData
-
-            delegate: MenuItem {
-                text: modelData.label
-                onTriggered: modelData.handler()
-            }
-
-            onObjectAdded: (i, o) => contextMenu.insertItem(i, o)
-            onObjectRemoved: (i, o) => contextMenu.removeItem(o)
-        }
+    ContextMenu {
+        id: ctx
+        menuData: root.menuJson
     }
 
     Rectangle {
         anchors.fill: parent
-        color: "#2b2b2b"
 
         MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.RightButton
 
-            onClicked: (mouse) => {
-                if (mouse.button === Qt.RightButton)
-                    contextMenu.popup(mouse.x, mouse.y)
+            onClicked: function(mouse) {
+                if (mouse.button === Qt.RightButton) {
+                    ctx.buildMenu()
+                    ctx.x = mouse.x
+                    ctx.y = mouse.y
+                    ctx.open()
+                }
             }
         }
     }
 }
+
