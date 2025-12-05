@@ -17,14 +17,27 @@ qt_add_executable(ContextMenuDemo
     main.cpp
 )
 
+set(qml_files
+    qml/Main.qml
+    qml/ContextMenu.qml
+    qml/MenuItem.qml
+    qml/Separator.qml
+)
+
+set(qml_singletons
+    qml/Theme.qml
+)
+
+set_source_files_properties(${qml_singletons}
+    PROPERTIES QT_QML_SINGLETON_TYPE TRUE
+)
+
 qt_add_qml_module(ContextMenuDemo
     URI ContextMenu
     VERSION 1.0
     QML_FILES
-        qml/Main.qml
-        qml/ContextMenu.qml
-        qml/MenuItem.qml
-        qml/Separator.qml
+        ${qml_files}
+        ${qml_singletons}
 )
 
 target_link_libraries(ContextMenuDemo

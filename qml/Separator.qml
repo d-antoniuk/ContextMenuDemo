@@ -3,6 +3,8 @@ import QtQuick
 Rectangle {
     width: parent.width
     height: 1
-    color: "#505050"
+    color: Theme.separator
+    anchors.leftMargin: 0
+    anchors.rightMargin: 0
 }
 

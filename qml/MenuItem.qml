@@ -4,7 +4,7 @@ import QtQuick.Controls
 Item {
     id: root
     width: parent ? parent.width : 180
-    height: 28
+    height: Theme.itemHeight
 
     signal triggered(string id)
 
@@ -12,18 +12,19 @@ Item {
     property string itemId: ""
 
     Rectangle {
+        id: bg
         anchors.fill: parent
-        color: controlArea.containsMouse ? "#3a3a3a" : "#2b2b2b"
         radius: 4
+        color: controlArea.containsMouse ? Theme.hover : Theme.background
     }
 
     Text {
         text: root.label
+        color: Theme.text
+        font.pixelSize: Theme.fontSize
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.leftMargin: 10
-        color: "white"
-        font.pixelSize: 14
     }
 
     MouseArea {
