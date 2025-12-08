@@ -10,15 +10,44 @@ Window {
     visible: true
     title: "Context Menu"
 
-    property var menuJson: [
-        { type: "item", label: "New File", id: "new", handler: () => console.log("NEW FILE") },
-        { type: "item", label: "Open…", id: "open", handler: () => console.log("OPEN") },
-        { type: "separator" },
-        { type: "item", label: "Save", id: "save", handler: () => console.log("SAVE") },
-        { type: "item", label: "Save As…", id: "saveAs", handler: () => console.log("SAVE AS") },
-        { type: "separator" },
-        { type: "item", label: "Exit", id: "exit", handler: () => Qt.quit() }
-    ]
+property var menuJson: [
+    { type: "item", label: "Test", id: "" },
+
+    { type: "submenu", label: "Test", children: [
+        { type: "item", label: "Test", id: "" },
+        { type: "item", label: "Test", id: "" },
+        { type: "submenu", label: "Test", children: [
+            { type: "item", label: "Test", id: "" },
+            { type: "separator" },
+            { type: "item", label: "Test", id: "" },
+            { type: "item", label: "Test", id: "" }
+        ]},
+    ]},
+
+    { type: "separator" },
+
+    { type: "submenu", label: "Test", children: [
+        { type: "item", label: "Test", id: "" },
+        { type: "item", label: "Test", id: "" },
+        { type: "submenu", label: "Test", children: [
+            { type: "item", label: "Test", id: "" },
+            { type: "separator" },
+            { type: "item", label: "Test", id: "" },
+            { type: "item", label: "Test", id: "" }
+        ]},
+    ]},
+
+    { type: "separator" },
+
+    { type: "item", label: "Test", id: "" },
+    { type: "item", label: "Test", id: "" },
+
+    { type: "separator" },
+
+    { type: "item", label: "Test", id: "" },
+    { type: "item", label: "Test", id: "" }
+]
+
 
     ContextMenu {
         id: ctx

@@ -20,7 +20,8 @@ qt_add_executable(ContextMenuDemo
 set(qml_files
     qml/Main.qml
     qml/ContextMenu.qml
-    qml/MenuItem.qml
+    qml/MenuPopup.qml
+    qml/MenuEntry.qml
     qml/Separator.qml
 )
 

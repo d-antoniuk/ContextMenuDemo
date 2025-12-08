@@ -1,52 +1,53 @@
 import QtQuick
 import QtQuick.Controls
 import QtQml
+import ContextMenu
 
-Popup {
+MenuPopup {
     id: menu
-    width: 232
-    modal: true
-    focus: true
-    padding: 6
-    background: Rectangle {
-        color: Theme.background
-        radius: Theme.radius
+
+    onItemTriggered: function (entry) {
+        if (entry.handler)
+            entry.handler();
+        menu.close();
     }
 
-    property var menuData: []
+    onSubmenuRequested: function (entry, refItem) {
+        openSubmenu(entry, refItem);
+    }
 
-    function buildMenu() {
-        menuContent.data = []
+    function openSubmenu(entry, refItem) {
+        if (submenu.visible)
+            submenu.close();
 
-        for (let i = 0; i < menu.menuData.length; i++) {
-            let entry = menu.menuData[i]
+        const globalPos = refItem.mapToItem(null, refItem.width, 0);
 
-            if (entry.type === "separator") {
-                var component = Qt.createComponent("Separator.qml")
-                if (component.status == Component.Ready) {
-                    var separator = component.createObject(menuContent);
-                }
-            } else if (entry.type === "item") {
-                let component = Qt.createComponent("MenuItem.qml")
-                if (component.status == Component.Ready) {
-                    let item = component.createObject(menuContent, {
-                        label: entry.label,
-                        itemId: entry.id
-                    })
+        submenu.menuData = entry.children;
+        submenu.buildMenu();
 
-                    item.triggered.connect(() => {
-                        if (entry.handler)
-                            entry.handler()
-                        menu.close()
-                    })
-                }
-            }
+        submenu.x = globalPos.x + Theme.padding;
+        submenu.y = globalPos.y;
+
+        submenu.open();
+    }
+
+    MenuPopup {
+        id: submenu
+        parent: menu.parent
+        width: menu.width
+        modal: false
+        focus: true
+        padding: menu.padding
+
+        onItemTriggered: function (entry) {
+            if (entry.handler)
+                entry.handler();
+            submenu.close();
+            menu.close();
+        }
+
+        onSubmenuRequested: function (entry, refItem) {
+            openSubmenu(entry, refItem);
         }
     }
-
-    contentItem: Column {
-        id: menuContent
-        spacing: 2
-    }
 }
-
