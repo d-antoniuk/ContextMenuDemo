@@ -10,48 +10,147 @@ Window {
     visible: true
     title: "Context Menu"
 
-property var menuJson: [
-    { type: "item", label: "Test", id: "" },
-
-    { type: "submenu", label: "Test", children: [
-        { type: "item", label: "Test", id: "" },
-        { type: "item", label: "Test", id: "" },
-        { type: "submenu", label: "Test", children: [
-            { type: "item", label: "Test", id: "" },
-            { type: "separator" },
-            { type: "item", label: "Test", id: "" },
-            { type: "item", label: "Test", id: "" }
-        ]},
-    ]},
-
-    { type: "separator" },
-
-    { type: "submenu", label: "Test", children: [
-        { type: "item", label: "Test", id: "" },
-        { type: "item", label: "Test", id: "" },
-        { type: "submenu", label: "Test", children: [
-            { type: "item", label: "Test", id: "" },
-            { type: "separator" },
-            { type: "item", label: "Test", id: "" },
-            { type: "item", label: "Test", id: "" }
-        ]},
-    ]},
-
-    { type: "separator" },
-
-    { type: "item", label: "Test", id: "" },
-    { type: "item", label: "Test", id: "" },
-
-    { type: "separator" },
-
-    { type: "item", label: "Test", id: "" },
-    { type: "item", label: "Test", id: "" }
-]
-
+    property var menuJson: [
+        {
+            type: "item",
+            label: "Test",
+            id: ""
+        },
+        {
+            type: "submenu",
+            label: "Test",
+            children: [
+                {
+                    type: "item",
+                    label: "Test",
+                    id: ""
+                },
+                {
+                    type: "item",
+                    label: "Test",
+                    id: ""
+                },
+                {
+                    type: "submenu",
+                    label: "Test",
+                    children: [
+                        {
+                            type: "item",
+                            label: "Test",
+                            id: ""
+                        },
+                        {
+                            type: "separator"
+                        },
+                        {
+                            type: "item",
+                            label: "Test",
+                            id: ""
+                        },
+                        {
+                            type: "item",
+                            label: "Test",
+                            id: ""
+                        }
+                    ]
+                },
+            ]
+        },
+        {
+            type: "separator"
+        },
+        {
+            type: "submenu",
+            label: "Test",
+            children: [
+                {
+                    type: "item",
+                    label: "Test",
+                    id: ""
+                },
+                {
+                    type: "item",
+                    label: "Test",
+                    id: ""
+                },
+                {
+                    type: "submenu",
+                    label: "Test",
+                    children: [
+                        {
+                            type: "item",
+                            label: "Test",
+                            id: ""
+                        },
+                        {
+                            type: "separator"
+                        },
+                        {
+                            type: "item",
+                            label: "Test",
+                            id: ""
+                        },
+                        {
+                            type: "item",
+                            label: "Test",
+                            id: ""
+                        }
+                    ]
+                },
+            ]
+        },
+        {
+            type: "separator"
+        },
+        {
+            type: "item",
+            label: "Test",
+            id: ""
+        },
+        {
+            type: "item",
+            label: "Test",
+            id: ""
+        },
+        {
+            type: "separator"
+        },
+        {
+            type: "item",
+            label: "Test",
+            id: ""
+        },
+        {
+            type: "item",
+            label: "Test",
+            id: ""
+        }
+    ]
 
     ContextMenu {
         id: ctx
         menuData: root.menuJson
+    }
+
+    Timer {
+        interval: 12000
+        running: true
+        repeat: false
+        onTriggered: {
+            root.menuJson.push({
+                type: "item",
+                label: "Added after 12s",
+                id: "delayed-top"
+            });
+
+            const firstSubmenu = root.menuJson.find(entry => entry.type === "submenu");
+            if (firstSubmenu)
+                firstSubmenu.children.push({
+                    type: "item",
+                    label: "Submenu item after 12s",
+                    id: "delayed-sub"
+                });
+        }
     }
 
     Rectangle {
@@ -61,15 +160,14 @@ property var menuJson: [
             anchors.fill: parent
             acceptedButtons: Qt.RightButton
 
-            onClicked: function(mouse) {
+            onClicked: function (mouse) {
                 if (mouse.button === Qt.RightButton) {
-                    ctx.buildMenu()
-                    ctx.x = mouse.x
-                    ctx.y = mouse.y
-                    ctx.open()
+                    ctx.buildMenu();
+                    ctx.x = mouse.x;
+                    ctx.y = mouse.y;
+                    ctx.open();
                 }
             }
         }
     }
 }
-
