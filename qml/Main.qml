@@ -139,34 +139,30 @@ Window {
         onTriggered: {
             root.menuJson.push({
                 type: "item",
-                label: "Added after 12s",
-                id: "delayed-top"
+                label: "Dynamic menu item",
+                id: ""
             });
 
             const firstSubmenu = root.menuJson.find(entry => entry.type === "submenu");
             if (firstSubmenu)
                 firstSubmenu.children.push({
                     type: "item",
-                    label: "Submenu item after 12s",
-                    id: "delayed-sub"
+                    label: "Dynamic submenu item",
+                    id: ""
                 });
         }
     }
 
-    Rectangle {
+    MouseArea {
         anchors.fill: parent
+        acceptedButtons: Qt.RightButton
 
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.RightButton
-
-            onClicked: function (mouse) {
-                if (mouse.button === Qt.RightButton) {
-                    ctx.buildMenu();
-                    ctx.x = mouse.x;
-                    ctx.y = mouse.y;
-                    ctx.open();
-                }
+        onClicked: function (mouse) {
+            if (mouse.button === Qt.RightButton) {
+                ctx.buildMenu();
+                ctx.x = mouse.x;
+                ctx.y = mouse.y;
+                ctx.open();
             }
         }
     }

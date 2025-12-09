@@ -26,7 +26,7 @@ MenuPopup {
     function openSubmenu(entry, refItem, level) {
         closeSubmenusFrom(level);
 
-        const submenu = ensureSubmenu(level);
+        const submenu = getSubmenu(level);
         const globalPos = refItem.mapToItem(null, refItem.width, 0);
 
         submenu.menuData = entry.children;
@@ -45,7 +45,7 @@ MenuPopup {
         submenus.length = level;
     }
 
-    function ensureSubmenu(level) {
+    function getSubmenu(level) {
         if (!submenus[level]) {
             submenus[level] = submenuComponent.createObject(menu.parent, {
                 width: menu.width,
