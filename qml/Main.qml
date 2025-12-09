@@ -14,7 +14,10 @@ Window {
         {
             type: "item",
             label: "Test",
-            id: ""
+            id: "",
+            handler: function () {
+                console.log("Test menu entry click");
+            }
         },
         {
             type: "submenu",

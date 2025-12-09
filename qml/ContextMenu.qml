@@ -8,7 +8,7 @@ MenuPopup {
 
     property var submenus: []
 
-    onItemTriggered: handleTrigger
+    onItemTriggered: function(entry) { handleTrigger(entry) }
     onSubmenuRequested: function(entry, refItem) { openSubmenu(entry, refItem, 0) }
     onClosed: closeSubmenusFrom(0)
 
