@@ -144,12 +144,36 @@ Window {
             });
 
             const firstSubmenu = root.menuJson.find(entry => entry.type === "submenu");
-            if (firstSubmenu)
+            if (firstSubmenu) {
                 firstSubmenu.children.push({
                     type: "item",
                     label: "Dynamic submenu item",
                     id: ""
                 });
+
+                firstSubmenu.children.push({
+                    type: "submenu",
+                    label: "Dynamic nested submenu",
+                    children: [
+                        {
+                            type: "item",
+                            label: "Nested item",
+                            id: ""
+                        },
+                        {
+                            type: "submenu",
+                            label: "Deeper submenu",
+                            children: [
+                                {
+                                    type: "item",
+                                    label: "Deep item",
+                                    id: ""
+                                }
+                            ]
+                        }
+                    ]
+                });
+            }
         }
     }
 
