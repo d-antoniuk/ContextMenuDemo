@@ -23,17 +23,28 @@ MenuPopup {
         menu.close();
     }
 
+    function openAt(posX, posY) {
+        menu.buildMenu();
+        menu.smartPlace(posX, posY);
+        menu.open();
+    }
+
     function openSubmenu(entry, refItem, level) {
         closeSubmenusFrom(level);
 
         const submenu = getSubmenu(level);
-        const globalPos = refItem.mapToItem(null, refItem.width, 0);
+        const anchorTopLeft = refItem.mapToItem(null, 0, 0);
+        const anchorRect = {
+            x: anchorTopLeft.x,
+            y: anchorTopLeft.y,
+            width: refItem.width,
+            height: refItem.height
+        };
 
         submenu.menuData = entry.children;
         submenu.buildMenu();
 
-        submenu.x = globalPos.x + Theme.padding;
-        submenu.y = globalPos.y;
+        submenu.smartPlace(anchorRect.x + anchorRect.width + Theme.padding, anchorRect.y, anchorRect);
         submenu.open();
     }
 

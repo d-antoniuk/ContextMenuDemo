@@ -5,8 +5,8 @@ import ContextMenu
 
 Window {
     id: root
-    width: 450
-    height: 320
+    width: 900
+    height: 600
     visible: true
     title: "Context Menu"
 
@@ -186,10 +186,7 @@ Window {
 
         onClicked: function (mouse) {
             if (mouse.button === Qt.RightButton) {
-                ctx.buildMenu();
-                ctx.x = mouse.x;
-                ctx.y = mouse.y;
-                ctx.open();
+                ctx.openAt(mouse.x, mouse.y);
             }
         }
     }

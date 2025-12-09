@@ -15,6 +15,48 @@ Popup {
     signal itemTriggered(var entry)
     signal submenuRequested(var entry, Item refItem)
 
+    function smartPlace(preferredX, preferredY, anchorRect) {
+        const popupSize = __popupSize();
+        const margin = Theme.padding;
+
+        let x = preferredX;
+        let y = preferredY;
+
+        if (menu.parent) {
+            if (anchorRect) {
+                const spaceRight = menu.parent.width - margin - (anchorRect.x + anchorRect.width);
+                const spaceLeft = anchorRect.x - margin;
+                const fitsRight = spaceRight >= popupSize.width;
+                const fitsLeft = spaceLeft >= popupSize.width;
+
+                if (!fitsRight && fitsLeft) {
+                    x = anchorRect.x - margin - popupSize.width;
+                } else {
+                    x = anchorRect.x + anchorRect.width + margin;
+
+                    if (!fitsRight && !fitsLeft) {
+                        x = spaceRight >= spaceLeft ? menu.parent.width - margin - popupSize.width : margin;
+                    }
+                }
+            }
+
+            x = Math.min(Math.max(margin, x), Math.max(margin, menu.parent.width - margin - popupSize.width));
+            y = Math.min(Math.max(margin, y), Math.max(margin, menu.parent.height - margin - popupSize.height));
+        } else {
+            console.log("[MenuPopup.smartPlace] no menu.parent available; using preferred coords");
+        }
+
+        menu.x = x;
+        menu.y = y;
+    }
+
+    function __popupSize() {
+        return {
+            width: menu.width > 0 ? menu.width : menu.implicitWidth,
+            height: menu.implicitHeight > 0 ? menu.implicitHeight : menu.height
+        }
+    }
+
     function buildMenu() {
         menuContent.data = []
 
