@@ -135,50 +135,50 @@ Window {
         menuData: root.menuJson
     }
 
-    Timer {
-        interval: 12000
-        running: true
-        repeat: false
-        onTriggered: {
-            root.menuJson.push({
-                type: "item",
-                label: "Dynamic menu item",
-                id: ""
-            });
+    // Timer {
+    //     interval: 12000
+    //     running: true
+    //     repeat: false
+    //     onTriggered: {
+    //         root.menuJson.push({
+    //             type: "item",
+    //             label: "Dynamic menu item",
+    //             id: ""
+    //         });
 
-            const firstSubmenu = root.menuJson.find(entry => entry.type === "submenu");
-            if (firstSubmenu) {
-                firstSubmenu.children.push({
-                    type: "item",
-                    label: "Dynamic submenu item",
-                    id: ""
-                });
+    //         const firstSubmenu = root.menuJson.find(entry => entry.type === "submenu");
+    //         if (firstSubmenu) {
+    //             firstSubmenu.children.push({
+    //                 type: "item",
+    //                 label: "Dynamic submenu item",
+    //                 id: ""
+    //             });
 
-                firstSubmenu.children.push({
-                    type: "submenu",
-                    label: "Dynamic nested submenu",
-                    children: [
-                        {
-                            type: "item",
-                            label: "Nested item",
-                            id: ""
-                        },
-                        {
-                            type: "submenu",
-                            label: "Deeper submenu",
-                            children: [
-                                {
-                                    type: "item",
-                                    label: "Deep item",
-                                    id: ""
-                                }
-                            ]
-                        }
-                    ]
-                });
-            }
-        }
-    }
+    //             firstSubmenu.children.push({
+    //                 type: "submenu",
+    //                 label: "Dynamic nested submenu",
+    //                 children: [
+    //                     {
+    //                         type: "item",
+    //                         label: "Nested item",
+    //                         id: ""
+    //                     },
+    //                     {
+    //                         type: "submenu",
+    //                         label: "Deeper submenu",
+    //                         children: [
+    //                             {
+    //                                 type: "item",
+    //                                 label: "Deep item",
+    //                                 id: ""
+    //                             }
+    //                         ]
+    //                     }
+    //                 ]
+    //             });
+    //         }
+    //     }
+    // }
 
     MouseArea {
         anchors.fill: parent

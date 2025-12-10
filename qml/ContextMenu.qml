@@ -25,7 +25,7 @@ MenuPopup {
 
     function openAt(posX, posY) {
         menu.buildMenu();
-        menu.smartPlace(posX, posY);
+        menu.smartPlace({ preferredX: posX, preferredY: posY });
         menu.open();
     }
 
@@ -44,7 +44,15 @@ MenuPopup {
         submenu.menuData = entry.children;
         submenu.buildMenu();
 
-        submenu.smartPlace(anchorRect.x + anchorRect.width + Theme.padding, anchorRect.y, anchorRect);
+        const parentPlacement = level === 0 ? menu.lastHorizontalPlacement : submenus[level - 1].lastHorizontalPlacement;
+        const preferLeft = parentPlacement === "left";
+        const preferredX = preferLeft ? anchorRect.x - Theme.padding - submenu.width : anchorRect.x + anchorRect.width + Theme.padding;
+        submenu.smartPlace({
+            preferredX: preferredX,
+            preferredY: anchorRect.y,
+            anchorRect: anchorRect,
+            preferLeft: preferLeft
+        });
         submenu.open();
     }
 
