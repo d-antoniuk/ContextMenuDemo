@@ -31,7 +31,7 @@ Popup {
         let horizontal = "right";
         let vertical = "down";
 
-        if (menu.parent && anchorRect) {
+        if (anchorRect) {
             const horiz = __placeHorizontal(anchorRect, popupSize, margin, preferLeft);
             horizontal = horiz.side;
             x = horiz.pos;
@@ -43,6 +43,12 @@ Popup {
             const clamp = __clampToParent(x, y, popupSize, margin);
             x = clamp.x;
             y = clamp.y;
+        } else {
+            const clamp = __clampToParent(preferredX, preferredY, popupSize, margin);
+            x = clamp.x;
+            y = clamp.y;
+            horizontal = clamp.x >= preferredX ? "right" : "left";
+            vertical = clamp.y >= preferredY ? "down" : "up";
         }
 
         menu.x = x;
