@@ -13,120 +13,33 @@ Window {
     property var menuJson: [
         {
             type: "item",
-            label: "Test",
-            id: "",
+            label: "Copy",
+            id: "copy",
+            shortcut: "Cmd+C",
             handler: function () {
-                console.log("Test menu entry click");
+                console.log("Copy");
             }
         },
         {
             type: "submenu",
-            label: "Test",
+            label: "Copy as",
             children: [
                 {
-                    type: "item",
-                    label: "Test",
-                    id: ""
-                },
-                {
-                    type: "item",
-                    label: "Test",
-                    id: ""
-                },
-                {
                     type: "submenu",
-                    label: "Test",
+                    label: "Copy as code",
                     children: [
-                        {
-                            type: "item",
-                            label: "Test",
-                            id: ""
-                        },
-                        {
-                            type: "separator"
-                        },
-                        {
-                            type: "item",
-                            label: "Test",
-                            id: ""
-                        },
-                        {
-                            type: "item",
-                            label: "Test",
-                            id: ""
-                        }
+                        { type: "item", label: "CSS", id: "copy-code-css" },
+                        { type: "item", label: "CSS (all layers)", id: "copy-code-css-all" },
+                        { type: "item", label: "iOS", id: "copy-code-ios" },
+                        { type: "item", label: "Android", id: "copy-code-android" }
                     ]
                 },
+                { type: "item", label: "Copy as SVG", id: "copy-svg" },
+                { type: "item", label: "Copy as PNG", id: "copy-png", shortcut: "Ctrl+Shift+C" },
+                { type: "item", label: "Copy link to selection", id: "copy-link" },
+                { type: "separator" },
+                { type: "item", label: "Copy properties", id: "copy-props", shortcut: "Ctrl+Alt+C" }
             ]
-        },
-        {
-            type: "separator"
-        },
-        {
-            type: "submenu",
-            label: "Test",
-            children: [
-                {
-                    type: "item",
-                    label: "Test",
-                    id: ""
-                },
-                {
-                    type: "item",
-                    label: "Test",
-                    id: ""
-                },
-                {
-                    type: "submenu",
-                    label: "Test",
-                    children: [
-                        {
-                            type: "item",
-                            label: "Test",
-                            id: ""
-                        },
-                        {
-                            type: "separator"
-                        },
-                        {
-                            type: "item",
-                            label: "Test",
-                            id: ""
-                        },
-                        {
-                            type: "item",
-                            label: "Test",
-                            id: ""
-                        }
-                    ]
-                },
-            ]
-        },
-        {
-            type: "separator"
-        },
-        {
-            type: "item",
-            label: "Test",
-            id: ""
-        },
-        {
-            type: "item",
-            label: "Test",
-            id: ""
-        },
-        {
-            type: "separator"
-        },
-        {
-            type: "item",
-            label: "Test",
-            id: ""
-        },
-        {
-            type: "item",
-            label: "Test",
-            id: ""
         }
     ]
 

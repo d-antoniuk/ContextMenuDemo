@@ -148,7 +148,8 @@ Popup {
                     let item = component.createObject(menuContent, {
                         label: entry.label,
                         itemId: entry.id ? entry.id : "",
-                        children: entry.children || []
+                        children: entry.children || [],
+                        shortcut: entry.shortcut || ""
                     });
 
                     item.triggered.connect(() => {

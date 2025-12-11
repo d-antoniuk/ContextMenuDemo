@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import ContextMenu
 
 Item {
@@ -11,6 +12,7 @@ Item {
     property string itemId: ""
     property var children: []
     property bool hasSubmenu: children && children.length > 0
+    property string shortcut: ""
 
     signal triggered(string id)
     signal requestOpenSubmenu(Item refItem)
@@ -22,23 +24,44 @@ Item {
         color: hoverArea.containsMouse ? Theme.hover : Theme.background
     }
 
-    Text {
-        text: root.label
-        color: Theme.text
-        font.pixelSize: Theme.fontSize
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: parent.left
-        anchors.leftMargin: 10
-    }
+    RowLayout {
+        anchors.fill: parent
+        anchors.margins: 8
+        spacing: 8
 
-    Text {
-        text: "›"
-        visible: root.hasSubmenu
-        color: Theme.text
-        font.pixelSize: Theme.fontSize
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.right: parent.right
-        anchors.rightMargin: 10
+        Text {
+            id: labelText
+            text: root.label
+            color: Theme.text
+            font.pixelSize: Theme.fontSize
+            elide: Text.ElideRight
+            verticalAlignment: Text.AlignVCenter
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignVCenter
+        }
+
+        Text {
+            id: shortcutText
+            text: root.shortcut
+            visible: root.shortcut !== ""
+            color: Theme.text
+            opacity: 0.8
+            font.pixelSize: Theme.fontSize
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignRight
+            Layout.alignment: Qt.AlignVCenter
+            Layout.preferredWidth: visible ? implicitWidth : 0
+        }
+
+        Text {
+            id: arrow
+            text: "›"
+            visible: root.hasSubmenu
+            color: Theme.text
+            font.pixelSize: Theme.fontSize
+            Layout.alignment: Qt.AlignVCenter
+            Layout.preferredWidth: visible ? implicitWidth : 0
+        }
     }
 
     Timer {
