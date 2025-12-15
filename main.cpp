@@ -1,19 +1,25 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include <qqml.h>
 
-int main(int argc, char *argv[])
+#include "device_model.h"
+
+int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    const QUrl url(u"qrc:/ContextMenu/qml/Main.qml"_qs);
+    DeviceClient client;
+    DeviceModel deviceModel(&client);
 
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, &app, [url](QObject *obj, const QUrl &objUrl)
-                     {
-            if (!obj && url == objUrl)
-                QCoreApplication::exit(-1); }, Qt::QueuedConnection);
+    qmlRegisterUncreatableType<DeviceModel>("ContextMenu", 1, 0, "DeviceModel", "Enums only");
 
-    engine.load(url);
+    engine.rootContext()->setContextProperty("deviceModel", &deviceModel);
+
+    engine.load(QUrl(QStringLiteral("qrc:/ContextMenu/qml/Main.qml")));
+    if (engine.rootObjects().isEmpty())
+        return -1;
 
     return app.exec();
 }

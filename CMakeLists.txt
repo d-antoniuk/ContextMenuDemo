@@ -15,6 +15,9 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 qt_add_executable(ContextMenuDemo
     main.cpp
+    device_model.cpp
+
+    device_model.h
 )
 
 set(qml_files

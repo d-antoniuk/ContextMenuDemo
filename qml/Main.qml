@@ -1,106 +1,200 @@
 import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
+import QtQuick.Layouts
 import ContextMenu
 
 Window {
     id: root
-    width: 900
-    height: 600
+    width: 800
+    height: 450
     visible: true
-    title: "Context Menu"
+    title: "Device table with context menu"
 
-    property var menuJson: [
-        {
-            type: "item",
-            label: "Copy",
-            id: "copy",
-            shortcut: "Cmd+C",
-            handler: function () {
-                console.log("Copy");
-            }
-        },
-        {
-            type: "submenu",
-            label: "Copy as",
-            children: [
-                {
-                    type: "submenu",
-                    label: "Copy as code",
-                    children: [
-                        { type: "item", label: "CSS", id: "copy-code-css" },
-                        { type: "item", label: "CSS (all layers)", id: "copy-code-css-all" },
-                        { type: "item", label: "iOS", id: "copy-code-ios" },
-                        { type: "item", label: "Android", id: "copy-code-android" }
-                    ]
-                },
-                { type: "item", label: "Copy as SVG", id: "copy-svg" },
-                { type: "item", label: "Copy as PNG", id: "copy-png", shortcut: "Ctrl+Shift+C" },
-                { type: "item", label: "Copy link to selection", id: "copy-link" },
-                { type: "separator" },
-                { type: "item", label: "Copy properties", id: "copy-props", shortcut: "Ctrl+Alt+C" }
-            ]
-        }
+    color: Theme.windowBackground
+
+    property var columns: [
+        { title: "Name", role: "name", width: 360 },
+        { title: "Version", role: "version", width: 160 }
     ]
 
-    ContextMenu {
-        id: ctx
-        menuData: root.menuJson
+    ColumnLayout {
+        anchors.fill: parent
+        anchors.margins: 18
+        spacing: 12
+
+        Text {
+            text: "Devices"
+            color: Theme.text
+            font.pixelSize: 22
+            font.bold: true
+            horizontalAlignment: Text.AlignLeft
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            radius: 12
+            color: Theme.panelBackground
+            border.color: Theme.panelBorder
+            clip: true
+
+            StackLayout {
+                anchors.fill: parent
+                anchors.margins: 12
+                currentIndex: (deviceModel && (deviceModel.state === DeviceModel.Pending || deviceModel.state === DeviceModel.Error)) ? 1 : 0
+
+                ColumnLayout {
+                    spacing: 8
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    Rectangle {
+                        id: header
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 38
+                        radius: 8
+                        color: Theme.headerBackground
+
+                        Row {
+                            anchors.fill: parent
+                            anchors.leftMargin: 10
+                            anchors.rightMargin: 10
+                            spacing: 0
+
+                            Repeater {
+                                model: root.columns
+                                delegate: Text {
+                                    width: tableView.columnWidthProvider(index)
+                                    text: modelData.title
+                                    color: Theme.headerText
+                                    font.pixelSize: 14
+                                    font.bold: true
+                                    verticalAlignment: Text.AlignVCenter
+                                    elide: Text.ElideRight
+                                }
+                            }
+                        }
+                    }
+
+                    TableView {
+                        id: tableView
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        columnSpacing: 0
+                        rowSpacing: 2
+                        boundsBehavior: Flickable.StopAtBounds
+                        clip: true
+                        reuseItems: true
+                        model: deviceModel
+                        property int activeRow: -1
+
+                        columnWidthProvider: function (column) { return root.columns[column].width; }
+                        rowHeightProvider: function (row) { return 40; }
+
+                        ScrollBar.vertical: ScrollBar {
+                            policy: ScrollBar.AsNeeded
+                        }
+
+                        delegate: Rectangle {
+                            implicitWidth: root.columns[column].width
+                            implicitHeight: 40
+                            color: tableView.activeRow === row ? Theme.rowActive
+                                                               : (row % 2 === 0 ? Theme.rowEven : Theme.rowOdd)
+                            border.width: mouseArea.containsMouse ? 1 : 0
+                            border.color: Theme.rowBorder
+                            radius: 6
+
+                            property var columnInfo: root.columns[column]
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.left: parent.left
+                                anchors.leftMargin: 12
+                                anchors.right: parent.right
+                                anchors.rightMargin: 12
+                                text: model[columnInfo.role]
+                                color: Theme.text
+                                font.pixelSize: Theme.fontSize
+                                elide: Text.ElideRight
+                            }
+
+                            MouseArea {
+                                id: mouseArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                                onClicked: function (mouse) {
+                                    tableView.activeRow = row;
+                                    if (mouse.button === Qt.RightButton) {
+                                        const globalPos = mouseArea.mapToItem(null, mouse.x, mouse.y);
+                                        rowContextMenu.showFor(model, globalPos);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: deviceModel && deviceModel.statusMessage.length > 0
+                              ? deviceModel.statusMessage
+                              : (deviceModel && deviceModel.state === DeviceModel.Pending
+                                 ? "Loading devices..."
+                                 : "Failed to load devices")
+                        color: Theme.text
+                        font.pixelSize: 16
+                        font.bold: true
+                    }
+                }
+            }
+        }
     }
 
-    // Timer {
-    //     interval: 12000
-    //     running: true
-    //     repeat: false
-    //     onTriggered: {
-    //         root.menuJson.push({
-    //             type: "item",
-    //             label: "Dynamic menu item",
-    //             id: ""
-    //         });
+    ContextMenu {
+        id: rowContextMenu
+        property var currentDevice: null
 
-    //         const firstSubmenu = root.menuJson.find(entry => entry.type === "submenu");
-    //         if (firstSubmenu) {
-    //             firstSubmenu.children.push({
-    //                 type: "item",
-    //                 label: "Dynamic submenu item",
-    //                 id: ""
-    //             });
+        function showFor(device, point) {
+            currentDevice = device;
+            menuData = [
+                {
+                    type: "submenu",
+                    label: "Option-level-1",
+                    shortcut: "Alt+1",
+                    children: [
+                        {
+                            type: "submenu",
+                            label: "Option-level-2",
+                            shortcut: "Alt+2",
+                            children: [
+                                {
+                                    type: "item",
+                                    label: "Option-level-3",
+                                    id: "option-level-3",
+                                    shortcut: "Alt+3",
+                                    handler: function () { console.log(device.name, device.version); }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: "item",
+                    label: "Option-2-level-1",
+                    id: "option-2-level-2",
+                    shortcut: "Ctrl+D",
+                    handler: function () { console.log(device.name, device.version); }
+                }
+            ];
 
-    //             firstSubmenu.children.push({
-    //                 type: "submenu",
-    //                 label: "Dynamic nested submenu",
-    //                 children: [
-    //                     {
-    //                         type: "item",
-    //                         label: "Nested item",
-    //                         id: ""
-    //                     },
-    //                     {
-    //                         type: "submenu",
-    //                         label: "Deeper submenu",
-    //                         children: [
-    //                             {
-    //                                 type: "item",
-    //                                 label: "Deep item",
-    //                                 id: ""
-    //                             }
-    //                         ]
-    //                     }
-    //                 ]
-    //             });
-    //         }
-    //     }
-    // }
-
-    MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.RightButton
-
-        onClicked: function (mouse) {
-            if (mouse.button === Qt.RightButton) {
-                ctx.openAt(mouse.x, mouse.y);
-            }
+            openAt(point.x, point.y);
         }
     }
 }

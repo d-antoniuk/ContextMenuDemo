@@ -44,7 +44,7 @@ Item {
             id: shortcutText
             text: root.shortcut
             visible: root.shortcut !== ""
-            color: Theme.text
+            color: Theme.shortcutText
             opacity: 0.8
             font.pixelSize: Theme.fontSize
             verticalAlignment: Text.AlignVCenter
