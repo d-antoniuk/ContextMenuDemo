@@ -101,9 +101,6 @@ Window {
                         model: deviceModel
                         property int activeRow: -1
                         property real columnWidth: (root.columns && root.columns.length > 0) ? width / root.columns.length : 0
-                        rowHeightProvider: function (row) {
-                            return 40;
-                        }
 
                         ScrollBar.vertical: ScrollBar {
                             policy: ScrollBar.AsNeeded

@@ -3,6 +3,11 @@
 #include <QTimer>
 #include <utility>
 
+namespace {
+const QHash<int, QByteArray> kRoleNames { { DeviceModel::NameRole, "name" },
+    { DeviceModel::VersionRole, "version" } };
+}
+
 void DeviceClient::fetchDevices(DeviceClient::Callback cb) const
 {
     QTimer::singleShot(3000, [cb = std::move(cb)]() {
@@ -32,7 +37,7 @@ int DeviceModel::columnCount(const QModelIndex& parent) const
     if (parent.isValid())
         return 0;
 
-    return ColumnCount;
+    return kRoleNames.size();
 }
 
 QVariant DeviceModel::data(const QModelIndex& index, int role) const
@@ -46,15 +51,6 @@ QVariant DeviceModel::data(const QModelIndex& index, int role) const
     const Device& device = m_devices.at(index.row());
 
     switch (role) {
-    case Qt::DisplayRole:
-        switch (index.column()) {
-        case NameColumn:
-            return device.name;
-        case VersionColumn:
-            return device.version;
-        default:
-            return QVariant();
-        }
     case NameRole:
         return device.name;
     case VersionRole:
@@ -66,41 +62,7 @@ QVariant DeviceModel::data(const QModelIndex& index, int role) const
 
 QHash<int, QByteArray> DeviceModel::roleNames() const
 {
-    return { { NameRole, "name" }, { VersionRole, "version" } };
-}
-
-QVariant DeviceModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        switch (section) {
-        case NameColumn:
-            return QStringLiteral("Name");
-        case VersionColumn:
-            return QStringLiteral("Version");
-        default:
-            break;
-        }
-    }
-
-    return QVariant();
-}
-
-QVariantMap DeviceModel::deviceAt(int row) const
-{
-    QVariantMap map;
-    if (row < 0)
-        return map;
-
-    if (m_state != State::Ready)
-        return map;
-
-    if (row >= m_devices.size())
-        return map;
-
-    const Device& device = m_devices.at(row);
-    map.insert("name", device.name);
-    map.insert("version", device.version);
-    return map;
+    return kRoleNames;
 }
 
 void DeviceModel::reload()

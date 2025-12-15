@@ -30,10 +30,6 @@ public:
     Q_PROPERTY(State state READ state NOTIFY stateChanged)
     Q_PROPERTY(QString statusMessage READ statusMessage NOTIFY statusMessageChanged)
 
-    enum Columns { NameColumn = 0,
-        VersionColumn,
-        ColumnCount };
-
     enum Roles { NameRole = Qt::UserRole + 1,
         VersionRole };
 
@@ -43,9 +39,7 @@ public:
     int columnCount(const QModelIndex& parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-    Q_INVOKABLE QVariantMap deviceAt(int row) const;
     Q_INVOKABLE void reload();
 
     State state() const { return m_state; }
