@@ -55,32 +55,35 @@ Window {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    Rectangle {
+                    Item {
                         id: header
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 38
-                        radius: 8
-                        color: Theme.headerBackground
-                        border.width: 1
-                        border.color: Theme.rowBorder
+                        Layout.preferredHeight: 40
 
                         Row {
-                            id: headerRow
                             anchors.fill: parent
                             spacing: 0
 
                             Repeater {
                                 model: root.columns
-                                delegate: Text {
+                                delegate: Rectangle {
                                     width: tableView.columnWidth
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: modelData.title
-                                    color: Theme.headerText
-                                    font.pixelSize: 14
-                                    font.bold: true
-                                    horizontalAlignment: Text.AlignHCenter
-                                    verticalAlignment: Text.AlignVCenter
-                                    elide: Text.ElideRight
+                                    height: header.height
+                                    color: Theme.headerBackground
+                                    border.width: 1
+                                    border.color: Theme.rowBorder
+                                    radius: 6
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: modelData.title
+                                        color: Theme.headerText
+                                        font.pixelSize: 14
+                                        font.bold: true
+                                        horizontalAlignment: Text.AlignHCenter
+                                        verticalAlignment: Text.AlignVCenter
+                                        elide: Text.ElideRight
+                                    }
                                 }
                             }
                         }
