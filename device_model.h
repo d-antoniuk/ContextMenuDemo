@@ -37,7 +37,7 @@ public:
     enum Roles { NameRole = Qt::UserRole + 1,
         VersionRole };
 
-    explicit DeviceModel(DeviceClient* client, QObject* parent = nullptr);
+    DeviceModel(DeviceClient* client, QObject* parent = nullptr);
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     int columnCount(const QModelIndex& parent = QModelIndex()) const override;

@@ -5,24 +5,21 @@
 
 void DeviceClient::fetchDevices(DeviceClient::Callback cb) const
 {
-    QTimer::singleShot(3000, [cb = std::move(cb)]()
-                       {
-        QVector<Device> devices {
-            { "Name1", "Version1" },
-            { "Name2", "Version2" },
-            { "Name3", "Version3" }
-        };
+    QTimer::singleShot(3000, [cb = std::move(cb)]() {
+        QVector<Device> devices { { "Name1", "Version1" }, { "Name2", "Version2" }, { "Name3", "Version3" } };
 
-        cb(std::error_code {}, devices); });
+        cb(std::error_code {}, devices);
+    });
 }
 
-DeviceModel::DeviceModel(DeviceClient *client, QObject *parent)
-    : QAbstractTableModel(parent), m_client(client)
+DeviceModel::DeviceModel(DeviceClient* client, QObject* parent)
+    : QAbstractTableModel(parent)
+    , m_client(client)
 {
     fetchDevices();
 }
 
-int DeviceModel::rowCount(const QModelIndex &parent) const
+int DeviceModel::rowCount(const QModelIndex& parent) const
 {
     if (parent.isValid())
         return 0;
@@ -30,7 +27,7 @@ int DeviceModel::rowCount(const QModelIndex &parent) const
     return m_devices.size();
 }
 
-int DeviceModel::columnCount(const QModelIndex &parent) const
+int DeviceModel::columnCount(const QModelIndex& parent) const
 {
     if (parent.isValid())
         return 0;
@@ -38,7 +35,7 @@ int DeviceModel::columnCount(const QModelIndex &parent) const
     return ColumnCount;
 }
 
-QVariant DeviceModel::data(const QModelIndex &index, int role) const
+QVariant DeviceModel::data(const QModelIndex& index, int role) const
 {
     if (!index.isValid())
         return QVariant();
@@ -46,13 +43,11 @@ QVariant DeviceModel::data(const QModelIndex &index, int role) const
     if (index.row() < 0 || index.row() >= m_devices.size())
         return QVariant();
 
-    const Device &device = m_devices.at(index.row());
+    const Device& device = m_devices.at(index.row());
 
-    switch (role)
-    {
+    switch (role) {
     case Qt::DisplayRole:
-        switch (index.column())
-        {
+        switch (index.column()) {
         case NameColumn:
             return device.name;
         case VersionColumn:
@@ -71,17 +66,13 @@ QVariant DeviceModel::data(const QModelIndex &index, int role) const
 
 QHash<int, QByteArray> DeviceModel::roleNames() const
 {
-    return {
-        {NameRole, "name"},
-        {VersionRole, "version"}};
+    return { { NameRole, "name" }, { VersionRole, "version" } };
 }
 
 QVariant DeviceModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-    {
-        switch (section)
-        {
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+        switch (section) {
         case NameColumn:
             return QStringLiteral("Name");
         case VersionColumn:
@@ -106,7 +97,7 @@ QVariantMap DeviceModel::deviceAt(int row) const
     if (row >= m_devices.size())
         return map;
 
-    const Device &device = m_devices.at(row);
+    const Device& device = m_devices.at(row);
     map.insert("name", device.name);
     map.insert("version", device.version);
     return map;
@@ -126,7 +117,7 @@ void DeviceModel::setState(DeviceModel::State state)
     emit stateChanged();
 }
 
-void DeviceModel::setStatusMessage(const QString &message)
+void DeviceModel::setStatusMessage(const QString& message)
 {
     if (m_statusMessage == message)
         return;
@@ -137,8 +128,7 @@ void DeviceModel::setStatusMessage(const QString &message)
 
 void DeviceModel::fetchDevices()
 {
-    if (!m_client)
-    {
+    if (!m_client) {
         setState(State::Error);
         setStatusMessage(QStringLiteral("No client configured"));
         beginResetModel();
@@ -154,8 +144,7 @@ void DeviceModel::fetchDevices()
     m_devices.clear();
     endResetModel();
 
-    m_client->fetchDevices([this](std::error_code ec, QVector<Device> devices)
-                           {
+    m_client->fetchDevices([this](std::error_code ec, QVector<Device> devices) {
         if (ec) {
             setState(State::Error);
             setStatusMessage(QStringLiteral("Failed to load devices"));
@@ -171,5 +160,6 @@ void DeviceModel::fetchDevices()
 
         beginResetModel();
         m_devices = std::move(devices);
-        endResetModel(); });
+        endResetModel();
+    });
 }
