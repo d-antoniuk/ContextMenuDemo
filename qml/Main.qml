@@ -9,13 +9,20 @@ Window {
     width: 800
     height: 450
     visible: true
-    title: "Device table with context menu"
-
+    title: "Device Manager"
     color: Theme.windowBackground
 
     property var columns: [
-        { title: "Name", role: "name", width: 360 },
-        { title: "Version", role: "version", width: 160 }
+        {
+            title: "Name",
+            role: "name",
+            width: 360
+        },
+        {
+            title: "Version",
+            role: "version",
+            width: 160
+        }
     ]
 
     ColumnLayout {
@@ -25,7 +32,7 @@ Window {
 
         Text {
             text: "Devices"
-            color: Theme.text
+            color: Theme.textPrimary
             font.pixelSize: 22
             font.bold: true
             horizontalAlignment: Text.AlignLeft
@@ -36,7 +43,6 @@ Window {
             Layout.fillHeight: true
             radius: 12
             color: Theme.panelBackground
-            border.color: Theme.panelBorder
             clip: true
 
             StackLayout {
@@ -45,7 +51,7 @@ Window {
                 currentIndex: (deviceModel && (deviceModel.state === DeviceModel.Pending || deviceModel.state === DeviceModel.Error)) ? 1 : 0
 
                 ColumnLayout {
-                    spacing: 8
+                    spacing: 0
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
@@ -55,21 +61,24 @@ Window {
                         Layout.preferredHeight: 38
                         radius: 8
                         color: Theme.headerBackground
+                        border.width: 1
+                        border.color: Theme.rowBorder
 
                         Row {
+                            id: headerRow
                             anchors.fill: parent
-                            anchors.leftMargin: 10
-                            anchors.rightMargin: 10
                             spacing: 0
 
                             Repeater {
                                 model: root.columns
                                 delegate: Text {
-                                    width: tableView.columnWidthProvider(index)
+                                    width: tableView.columnWidth
+                                    anchors.verticalCenter: parent.verticalCenter
                                     text: modelData.title
                                     color: Theme.headerText
                                     font.pixelSize: 14
                                     font.bold: true
+                                    horizontalAlignment: Text.AlignHCenter
                                     verticalAlignment: Text.AlignVCenter
                                     elide: Text.ElideRight
                                 }
@@ -88,20 +97,20 @@ Window {
                         reuseItems: true
                         model: deviceModel
                         property int activeRow: -1
-
-                        columnWidthProvider: function (column) { return root.columns[column].width; }
-                        rowHeightProvider: function (row) { return 40; }
+                        property real columnWidth: (root.columns && root.columns.length > 0) ? width / root.columns.length : 0
+                        rowHeightProvider: function (row) {
+                            return 40;
+                        }
 
                         ScrollBar.vertical: ScrollBar {
                             policy: ScrollBar.AsNeeded
                         }
 
                         delegate: Rectangle {
-                            implicitWidth: root.columns[column].width
+                            implicitWidth: tableView.columnWidth
                             implicitHeight: 40
-                            color: tableView.activeRow === row ? Theme.rowActive
-                                                               : (row % 2 === 0 ? Theme.rowEven : Theme.rowOdd)
-                            border.width: mouseArea.containsMouse ? 1 : 0
+                            color: tableView.activeRow === row ? Theme.rowActiveBackground : (row % 2 === 0 ? Theme.rowEvenBackground : Theme.rowOddBackground)
+                            border.width: 1
                             border.color: Theme.rowBorder
                             radius: 6
 
@@ -114,7 +123,7 @@ Window {
                                 anchors.right: parent.right
                                 anchors.rightMargin: 12
                                 text: model[columnInfo.role]
-                                color: Theme.text
+                                color: Theme.textPrimary
                                 font.pixelSize: Theme.fontSize
                                 elide: Text.ElideRight
                             }
@@ -143,12 +152,8 @@ Window {
 
                     Text {
                         anchors.centerIn: parent
-                        text: deviceModel && deviceModel.statusMessage.length > 0
-                              ? deviceModel.statusMessage
-                              : (deviceModel && deviceModel.state === DeviceModel.Pending
-                                 ? "Loading devices..."
-                                 : "Failed to load devices")
-                        color: Theme.text
+                        text: deviceModel && deviceModel.statusMessage.length > 0 ? deviceModel.statusMessage : (deviceModel && deviceModel.state === DeviceModel.Pending ? "Loading devices..." : "Failed to load devices")
+                        color: Theme.textPrimary
                         font.pixelSize: 16
                         font.bold: true
                     }
@@ -179,7 +184,9 @@ Window {
                                     label: "Option-level-3",
                                     id: "option-level-3",
                                     shortcut: "Alt+3",
-                                    handler: function () { console.log(device.name, device.version); }
+                                    handler: function () {
+                                        console.log(device.name, device.version);
+                                    }
                                 }
                             ]
                         }
@@ -190,7 +197,9 @@ Window {
                     label: "Option-2-level-1",
                     id: "option-2-level-2",
                     shortcut: "Ctrl+D",
-                    handler: function () { console.log(device.name, device.version); }
+                    handler: function () {
+                        console.log(device.name, device.version);
+                    }
                 }
             ];
 

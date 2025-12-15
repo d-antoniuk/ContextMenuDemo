@@ -21,7 +21,7 @@ Item {
         id: bg
         anchors.fill: parent
         radius: 4
-        color: hoverArea.containsMouse ? Theme.hover : Theme.background
+        color: hoverArea.containsMouse ? Theme.menuHoverBackground : Theme.menuBackground
     }
 
     RowLayout {
@@ -32,7 +32,7 @@ Item {
         Text {
             id: labelText
             text: root.label
-            color: Theme.text
+            color: Theme.menuText
             font.pixelSize: Theme.fontSize
             elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
@@ -44,7 +44,7 @@ Item {
             id: shortcutText
             text: root.shortcut
             visible: root.shortcut !== ""
-            color: Theme.shortcutText
+            color: Theme.menuShortcutText
             opacity: 0.8
             font.pixelSize: Theme.fontSize
             verticalAlignment: Text.AlignVCenter
@@ -57,7 +57,7 @@ Item {
             id: arrow
             text: "›"
             visible: root.hasSubmenu
-            color: Theme.text
+            color: Theme.menuText
             font.pixelSize: Theme.fontSize
             Layout.alignment: Qt.AlignVCenter
             Layout.preferredWidth: visible ? implicitWidth : 0

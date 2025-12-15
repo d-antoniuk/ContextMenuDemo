@@ -171,7 +171,7 @@ Popup {
     }
 
     background: Rectangle {
-        color: Theme.background
+        color: Theme.menuBackground
         radius: Theme.radius
     }
 

@@ -2,21 +2,29 @@ pragma Singleton
 import QtQuick
 
 QtObject {
-    // Colors
-    property color background: "#1e1e1e"
-    property color hover: "#0d99ff"
-    property color text: "#ffffff"
-    property color separator: "#383838"
-    property color shortcutText: "#9b9b9b"
-    property color windowBackground: background
-    property color panelBackground: background
-    property color panelBorder: separator
-    property color headerBackground: background
-    property color headerText: text
-    property color rowActive: hover
-    property color rowEven: background
-    property color rowOdd: background
-    property color rowBorder: hover
+    // Base palette
+    property color surfacePrimary: "#1e1e1e"
+    property color accentPrimary: "#0d99ff"
+    property color textPrimary: "#ffffff"
+    property color textMuted: "#9b9b9b"
+    property color borderSubtle: "#383838"
+
+    // Semantic roles
+    property color windowBackground: surfacePrimary
+    property color panelBackground: surfacePrimary
+    property color tableBorder: textPrimary
+    property color panelBorder: tableBorder
+    property color headerBackground: surfacePrimary
+    property color headerText: textPrimary
+    property color menuBackground: surfacePrimary
+    property color menuHoverBackground: accentPrimary
+    property color menuText: textPrimary
+    property color menuShortcutText: textMuted
+    property color menuSeparator: borderSubtle
+    property color rowActiveBackground: accentPrimary
+    property color rowEvenBackground: surfacePrimary
+    property color rowOddBackground: surfacePrimary
+    property color rowBorder: tableBorder
 
     // Metrics
     property int radius: 8
