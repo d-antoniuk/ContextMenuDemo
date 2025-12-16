@@ -15,13 +15,11 @@ Window {
     property var columns: [
         {
             title: "Name",
-            role: "name",
-            width: 360
+            role: "name"
         },
         {
             title: "Version",
-            role: "version",
-            width: 160
+            role: "version"
         }
     ]
 
@@ -39,16 +37,22 @@ Window {
         }
 
         Rectangle {
+            id: panelContainer
             Layout.fillWidth: true
             Layout.fillHeight: true
-            radius: 12
+            radius: Theme.radius
             color: Theme.panelBackground
             clip: true
+
+            readonly property bool isBusy: deviceModel && deviceModel.state !== DeviceModel.Ready
+            readonly property string statusText: deviceModel && deviceModel.statusMessage.length
+                                               ? deviceModel.statusMessage
+                                               : (deviceModel && deviceModel.state === DeviceModel.Pending ? "Loading devices..." : "Failed to load devices")
 
             StackLayout {
                 anchors.fill: parent
                 anchors.margins: 12
-                currentIndex: (deviceModel && (deviceModel.state === DeviceModel.Pending || deviceModel.state === DeviceModel.Error)) ? 1 : 0
+                currentIndex: panelContainer.isBusy ? 1 : 0
 
                 ColumnLayout {
                     spacing: 0
@@ -72,7 +76,7 @@ Window {
                                     color: Theme.headerBackground
                                     border.width: 1
                                     border.color: Theme.rowBorder
-                                    radius: 6
+                                    radius: Theme.radius
 
                                     Text {
                                         anchors.centerIn: parent
@@ -112,7 +116,7 @@ Window {
                             color: tableView.activeRow === row ? Theme.rowActiveBackground : (row % 2 === 0 ? Theme.rowEvenBackground : Theme.rowOddBackground)
                             border.width: 1
                             border.color: Theme.rowBorder
-                            radius: 6
+                            radius: Theme.radius
 
                             property var columnInfo: root.columns[column]
 
@@ -152,7 +156,7 @@ Window {
 
                     Text {
                         anchors.centerIn: parent
-                        text: deviceModel && deviceModel.statusMessage.length > 0 ? deviceModel.statusMessage : (deviceModel && deviceModel.state === DeviceModel.Pending ? "Loading devices..." : "Failed to load devices")
+                        text: panelContainer.statusText
                         color: Theme.textPrimary
                         font.pixelSize: 16
                         font.bold: true
@@ -170,22 +174,42 @@ Window {
             currentDevice = device;
             menuData = [
                 {
+                    type: "item",
+                    label: "Option 1",
+                    id: "option-1",
+                    checkable: true,
+                    checked: true,
+                    handler: function () {}
+                },
+                {
+                    type: "item",
+                    label: "Option 2",
+                    id: "option-2",
+                    checkable: true,
+                    checked: false,
+                    shortcut: "Ctrl+L",
+                    handler: function () {}
+                },
+                {
+                    type: "separator"
+                },
+                {
                     type: "submenu",
-                    label: "Option-level-1",
-                    shortcut: "Alt+1",
+                    label: "Option 3",
                     children: [
                         {
                             type: "submenu",
-                            label: "Option-level-2",
-                            shortcut: "Alt+2",
+                            label: "Option 4",
                             children: [
                                 {
                                     type: "item",
-                                    label: "Option-level-3",
-                                    id: "option-level-3",
+                                    label: "Option 5",
+                                    id: "option-5",
                                     shortcut: "Alt+3",
+                                    checkable: true,
+                                    checked: true,
                                     handler: function () {
-                                        console.log(device.name, device.version);
+                                        console.log(device.name, device.version, "Option-5 checked:", rowContextMenu.checkedItems["option-5"]);
                                     }
                                 }
                             ]
@@ -194,11 +218,12 @@ Window {
                 },
                 {
                     type: "item",
-                    label: "Option-2-level-1",
-                    id: "option-2-level-2",
+                    label: "Option 6",
+                    id: "option-6",
                     shortcut: "Ctrl+D",
+                    checkable: true,
                     handler: function () {
-                        console.log(device.name, device.version);
+                        console.log(device.name, device.version, "Option-6 checked:", rowContextMenu.checkedItems["option-6"]);
                     }
                 }
             ];

@@ -2,33 +2,35 @@ pragma Singleton
 import QtQuick
 
 QtObject {
-    // Base palette
-    property color surfacePrimary: "#1e1e1e"
-    property color accentPrimary: "#0d99ff"
-    property color textPrimary: "#ffffff"
-    property color textMuted: "#9b9b9b"
-    property color borderSubtle: "#383838"
+    property color surfacePrimary: "#F1F4F9"
+    property color surfaceSecondary: "#FFFFFF"
+    property color accentPrimary: "#0D99FF"
+    property color textPrimary: "#0F172A"
 
     // Semantic roles
     property color windowBackground: surfacePrimary
-    property color panelBackground: surfacePrimary
-    property color tableBorder: textPrimary
-    property color panelBorder: tableBorder
-    property color headerBackground: surfacePrimary
+    property color panelBackground: surfaceSecondary
+    property color tableBorder: "#D4D9E2"
+    property color headerBackground: "#EEF2F8"
     property color headerText: textPrimary
-    property color menuBackground: surfacePrimary
+    property color menuBackground: "#1E1E1E"
     property color menuHoverBackground: accentPrimary
-    property color menuText: textPrimary
-    property color menuShortcutText: textMuted
-    property color menuSeparator: borderSubtle
-    property color rowActiveBackground: accentPrimary
-    property color rowEvenBackground: surfacePrimary
-    property color rowOddBackground: surfacePrimary
+    property color menuText: "#EDEDED"
+    property color menuTextSecondary: "#9A9A9A"
+    property color menuSeparator: "#2F2F2F"
+    property color rowActiveBackground: "#E6F2FF"
+    property color rowEvenBackground: surfaceSecondary
+    property color rowOddBackground: "#F7F9FD"
     property color rowBorder: tableBorder
 
     // Metrics
     property int radius: 8
+    property int itemRadius: 6
     property int itemHeight: 28
     property int fontSize: 14
-    property int padding: 8
+    property int menuFontSize: 13
+    property int menuShortcutFontSize: 12
+    property int padding: 2
+    property int menuPaddingVertical: 4
+    property int menuPaddingHorizontal: 0
 }

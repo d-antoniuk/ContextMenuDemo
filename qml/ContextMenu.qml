@@ -7,12 +7,19 @@ MenuPopup {
     id: menu
 
     property var submenus: []
+    property var checkedItems: ({})
 
-    onItemTriggered: function(entry) { handleTrigger(entry) }
-    onSubmenuRequested: function(entry, refItem) { openSubmenu(entry, refItem, 0) }
+    onItemTriggered: function (entry) {
+        handleTrigger(entry);
+    }
+    onSubmenuRequested: function (entry, refItem) {
+        openSubmenu(entry, refItem, 0);
+    }
     onClosed: closeSubmenusFrom(0)
 
     function handleTrigger(entry) {
+        toggleChecked(entry);
+
         if (entry.handler)
             entry.handler();
         closeAll();
@@ -24,8 +31,12 @@ MenuPopup {
     }
 
     function openAt(posX, posY) {
+        applyCheckState(menu.menuData);
         menu.buildMenu();
-        menu.smartPlace({ preferredX: posX, preferredY: posY });
+        menu.smartPlace({
+            preferredX: posX,
+            preferredY: posY
+        });
         menu.open();
     }
 
@@ -41,12 +52,13 @@ MenuPopup {
             height: refItem.height
         };
 
+        applyCheckState(entry.children);
         submenu.menuData = entry.children;
         submenu.buildMenu();
 
         const parentPlacement = level === 0 ? menu.lastHorizontalPlacement : submenus[level - 1].lastHorizontalPlacement;
         const preferLeft = parentPlacement === "left";
-        const preferredX = preferLeft ? anchorRect.x - Theme.padding - submenu.width : anchorRect.x + anchorRect.width + Theme.padding;
+        const preferredX = preferLeft ? anchorRect.x - submenu.width : anchorRect.x + anchorRect.width;
         submenu.smartPlace({
             preferredX: preferredX,
             preferredY: anchorRect.y,
@@ -67,17 +79,15 @@ MenuPopup {
     function getSubmenu(level) {
         if (!submenus[level]) {
             submenus[level] = submenuComponent.createObject(menu.parent, {
-                width: menu.width,
                 modal: false,
-                focus: true,
-                padding: menu.padding
+                focus: true
             });
 
             submenus[level].itemTriggered.connect(handleTrigger);
-            submenus[level].submenuRequested.connect(function(entry, refItem) {
+            submenus[level].submenuRequested.connect(function (entry, refItem) {
                 openSubmenu(entry, refItem, level + 1);
             });
-            submenus[level].closed.connect(function() {
+            submenus[level].closed.connect(function () {
                 closeSubmenusFrom(level);
             });
         }
@@ -86,6 +96,33 @@ MenuPopup {
 
     Component {
         id: submenuComponent
-        MenuPopup { }
+        MenuPopup {}
+    }
+
+    function toggleChecked(entry) {
+        if (!entry || !entry.id)
+            return;
+        entry.checked = !checkedItems[entry.id];
+        checkedItems[entry.id] = entry.checked;
+    }
+
+    function applyCheckState(list) {
+        if (!list || !list.length)
+            return;
+
+        list.forEach(function (entry) {
+            if (!entry)
+                return;
+
+            entry.checkable = entry.checkable === true;
+            if (entry.checkable && entry.id) {
+                const saved = checkedItems[entry.id];
+                entry.checked = saved === undefined ? entry.checked === true : saved;
+                if (saved === undefined)
+                    checkedItems[entry.id] = entry.checked;
+            }
+            if (entry.children && entry.children.length)
+                applyCheckState(entry.children);
+        });
     }
 }

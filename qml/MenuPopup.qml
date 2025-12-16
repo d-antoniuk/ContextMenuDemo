@@ -5,10 +5,15 @@ import ContextMenu
 
 Popup {
     id: menu
-    width: 232
+    width: implicitWidth
     modal: true
     focus: true
-    padding: 6
+    topPadding: Theme.menuPaddingVertical
+    bottomPadding: Theme.menuPaddingVertical
+    leftPadding: Theme.menuPaddingHorizontal
+    rightPadding: Theme.menuPaddingHorizontal
+
+    implicitWidth: Math.max(232, menuContent.implicitWidth + leftPadding + rightPadding)
 
     property var menuData: []
     property string lastHorizontalPlacement: "right"
@@ -40,7 +45,7 @@ Popup {
             vertical = vert.side;
             y = vert.pos;
 
-            const clamp = __clampToParent(x, y, popupSize, margin);
+            const clamp = __clampToParent(x, y, popupSize, Theme.padding);
             x = clamp.x;
             y = clamp.y;
         } else {
@@ -137,46 +142,43 @@ Popup {
         };
     }
 
+    Component { id: separatorComponent; Separator {} }
+    Component { id: entryComponent; MenuEntry {} }
+
     function buildMenu() {
         menuContent.data = [];
-
-        for (let i = 0; i < menu.menuData.length; i++) {
-            let entry = menu.menuData[i];
-
+        menu.menuData.forEach(function (entry) {
             if (entry.type === "separator") {
-                let component = Qt.createComponent("Separator.qml");
-                if (component.status === Component.Ready) {
-                    component.createObject(menuContent);
-                }
-            } else if (entry.type === "item" || entry.type === "submenu") {
-                let component = Qt.createComponent("MenuEntry.qml");
-                if (component.status === Component.Ready) {
-                    let item = component.createObject(menuContent, {
-                        label: entry.label,
-                        itemId: entry.id ? entry.id : "",
-                        children: entry.children || [],
-                        shortcut: entry.shortcut || ""
-                    });
-
-                    item.triggered.connect(() => {
-                        menu.itemTriggered(entry);
-                    });
-
-                    item.requestOpenSubmenu.connect(function (refItem) {
-                        menu.submenuRequested(entry, refItem);
-                    });
-                }
+                separatorComponent.createObject(menuContent);
+                return;
             }
-        }
+            if (entry.type !== "item" && entry.type !== "submenu")
+                return;
+
+            const item = entryComponent.createObject(menuContent, {
+                label: entry.label,
+                itemId: entry.id || "",
+                children: entry.children || [],
+                shortcut: entry.shortcut || "",
+                checkable: entry.checkable === true || entry.checked !== undefined,
+                checked: entry.checked === true,
+            });
+            item.triggered.connect(() => menu.itemTriggered(entry));
+            item.requestOpenSubmenu.connect((refItem) => menu.submenuRequested(entry, refItem));
+        });
     }
 
     background: Rectangle {
-        color: Theme.menuBackground
+        id: bg
         radius: Theme.radius
+        color: Theme.menuBackground
+        antialiasing: true
+        clip: true
     }
 
     contentItem: Column {
         id: menuContent
-        spacing: 2
+        spacing: 0
+        width: menu.availableWidth
     }
 }

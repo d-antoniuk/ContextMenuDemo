@@ -42,11 +42,8 @@ int DeviceModel::columnCount(const QModelIndex& parent) const
 
 QVariant DeviceModel::data(const QModelIndex& index, int role) const
 {
-    if (!index.isValid())
-        return QVariant();
-
-    if (index.row() < 0 || index.row() >= m_devices.size())
-        return QVariant();
+    if (!index.isValid() || index.row() < 0 || index.row() >= m_devices.size())
+        return {};
 
     const Device& device = m_devices.at(index.row());
 
@@ -90,38 +87,33 @@ void DeviceModel::setStatusMessage(const QString& message)
 
 void DeviceModel::fetchDevices()
 {
+    auto updateDevices = [this](QVector<Device> devices) {
+        beginResetModel();
+        m_devices = std::move(devices);
+        endResetModel();
+    };
+
     if (!m_client) {
         setState(State::Error);
         setStatusMessage(QStringLiteral("No client configured"));
-        beginResetModel();
-        m_devices.clear();
-        endResetModel();
+        updateDevices({});
         return;
     }
 
     setState(State::Pending);
     setStatusMessage(QStringLiteral("Loading devices..."));
+    updateDevices({});
 
-    beginResetModel();
-    m_devices.clear();
-    endResetModel();
-
-    m_client->fetchDevices([this](std::error_code ec, QVector<Device> devices) {
+    m_client->fetchDevices([this, updateDevices](std::error_code ec, QVector<Device> devices) {
         if (ec) {
             setState(State::Error);
             setStatusMessage(QStringLiteral("Failed to load devices"));
-
-            beginResetModel();
-            m_devices.clear();
-            endResetModel();
+            updateDevices({});
             return;
         }
 
         setState(State::Ready);
         setStatusMessage(QString());
-
-        beginResetModel();
-        m_devices = std::move(devices);
-        endResetModel();
+        updateDevices(std::move(devices));
     });
 }
