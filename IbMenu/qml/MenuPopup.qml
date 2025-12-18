@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQml
-import ContextMenu
 
 Popup {
     id: menu
@@ -142,8 +141,14 @@ Popup {
         };
     }
 
-    Component { id: separatorComponent; Separator {} }
-    Component { id: entryComponent; MenuEntry {} }
+    Component {
+        id: separatorComponent
+        Separator {}
+    }
+    Component {
+        id: entryComponent
+        MenuEntry {}
+    }
 
     function buildMenu() {
         menuContent.data = [];
@@ -161,10 +166,10 @@ Popup {
                 children: entry.children || [],
                 shortcut: entry.shortcut || "",
                 checkable: entry.checkable === true || entry.checked !== undefined,
-                checked: entry.checked === true,
+                checked: entry.checked === true
             });
             item.triggered.connect(() => menu.itemTriggered(entry));
-            item.requestOpenSubmenu.connect((refItem) => menu.submenuRequested(entry, refItem));
+            item.requestOpenSubmenu.connect(refItem => menu.submenuRequested(entry, refItem));
         });
     }
 

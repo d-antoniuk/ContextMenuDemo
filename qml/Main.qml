@@ -2,7 +2,8 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
-import ContextMenu
+import DemoApp
+import IbMenu
 
 Window {
     id: root
@@ -45,9 +46,7 @@ Window {
             clip: true
 
             readonly property bool isBusy: deviceModel && deviceModel.state !== DeviceModel.Ready
-            readonly property string statusText: deviceModel && deviceModel.statusMessage.length
-                                               ? deviceModel.statusMessage
-                                               : (deviceModel && deviceModel.state === DeviceModel.Pending ? "Loading devices..." : "Failed to load devices")
+            readonly property string statusText: deviceModel ? deviceModel.statusMessage : ""
 
             StackLayout {
                 anchors.fill: parent
@@ -166,7 +165,7 @@ Window {
         }
     }
 
-    ContextMenu {
+    IbMenu {
         id: rowContextMenu
         property var currentDevice: null
 

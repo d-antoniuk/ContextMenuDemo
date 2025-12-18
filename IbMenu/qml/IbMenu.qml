@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQml
-import ContextMenu
 
 MenuPopup {
     id: menu

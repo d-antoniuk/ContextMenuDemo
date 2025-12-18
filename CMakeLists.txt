@@ -1,51 +1,36 @@
 cmake_minimum_required(VERSION 3.16)
-project(ContextMenuProject LANGUAGES CXX)
+
+project(ContextMenuDemo LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
-
 find_package(Qt6 REQUIRED COMPONENTS
+    Qml
     Quick
     QuickControls2
 )
 
-qt_add_executable(ContextMenuDemo
-    main.cpp
-    device_model.cpp
+qt_standard_project_setup()
 
-    device_model.h
+add_subdirectory(IbMenu)
+
+qt_add_executable(DemoAppExe
+    src/main.cpp
+    src/device_model.cpp
+    src/device_model.h
 )
 
-set(qml_files
-    qml/Main.qml
-    qml/ContextMenu.qml
-    qml/MenuPopup.qml
-    qml/MenuEntry.qml
-    qml/Separator.qml
-)
-
-set(qml_singletons
-    qml/Theme.qml
-)
-
-set_source_files_properties(${qml_singletons}
-    PROPERTIES QT_QML_SINGLETON_TYPE TRUE
-)
-
-qt_add_qml_module(ContextMenuDemo
-    URI ContextMenu
+qt_add_qml_module(DemoAppExe
+    URI DemoApp
     VERSION 1.0
     QML_FILES
-        ${qml_files}
-        ${qml_singletons}
+        qml/Main.qml
 )
 
-target_link_libraries(ContextMenuDemo
+target_link_libraries(DemoAppExe
     PRIVATE
+        IbMenu
         Qt6::Quick
         Qt6::QuickControls2
 )

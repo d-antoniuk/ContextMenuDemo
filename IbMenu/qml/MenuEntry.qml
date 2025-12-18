@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import ContextMenu
 
 Item {
     id: root
@@ -99,7 +98,7 @@ Item {
         repeat: false
         onTriggered: {
             if (hoverArea.containsMouse && root.hasSubmenu)
-                root.requestOpenSubmenu(root)
+                root.requestOpenSubmenu(root);
         }
     }
 
@@ -110,16 +109,16 @@ Item {
         cursorShape: Qt.ArrowCursor
         onEntered: {
             if (root.hasSubmenu)
-                hoverTimer.start()
+                hoverTimer.start();
         }
 
         onExited: hoverTimer.stop()
 
         onClicked: {
             if (root.hasSubmenu)
-                root.requestOpenSubmenu(root)
+                root.requestOpenSubmenu(root);
             else
-                root.triggered(root.itemId)
+                root.triggered(root.itemId);
         }
     }
 }

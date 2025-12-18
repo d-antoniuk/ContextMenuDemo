@@ -13,11 +13,11 @@ int main(int argc, char* argv[])
     DeviceClient client;
     DeviceModel deviceModel(&client);
 
-    qmlRegisterUncreatableType<DeviceModel>("ContextMenu", 1, 0, "DeviceModel", "Enums only");
+    qmlRegisterUncreatableType<DeviceModel>("DemoApp", 1, 0, "DeviceModel", "Enums only");
 
     engine.rootContext()->setContextProperty("deviceModel", &deviceModel);
 
-    engine.load(QUrl(QStringLiteral("qrc:/ContextMenu/qml/Main.qml")));
+    engine.loadFromModule("DemoApp", "Main");
     if (engine.rootObjects().isEmpty())
         return -1;
 
